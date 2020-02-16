@@ -37,10 +37,11 @@ If no appropriate session and csrf token is found access violation (403) or csrf
 
 #### Basic CSRF protection
 
-All successful authentication request will receive new csrf token, token are only readable from same domain and not modifiable. 
-All request to protected resources require the CSRF token present
+* All successful authentication request will receive new csrf token, token are only readable from same domain and not modifiable. 
+* All request to protected resources require the CSRF token present
 
 #### Example used for tests only
 
 GET  http://localhost:8080/level1/low_access.txt?XSRF=75DA5FAF2470BAA3_1581848921
+
 XSRF token can be also be set as header for better security.
