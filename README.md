@@ -1,6 +1,6 @@
 # access-gateway
 
-Static resources are hidden behind access gateway, user can only gain access to resource if the user has authenticated to required access level.
+access-gateway that regulates resources by access level. Users can only access resources once their access level is elevated to appropriate level. 
 
 ### Tech stack
 * Spring Boot Maven Plugin Reference Guide
