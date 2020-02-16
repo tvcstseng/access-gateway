@@ -27,12 +27,12 @@ import you.shall.not.pass.service.SessionService;
 
 @Component
 @Order(1)
-public class SecurityAccessGrantFilter implements Filter {
+public class SecurityFilter implements Filter {
 
     public static final String SESSION_COOKIE = "GRANT";
     public static final String EXECUTE_FILTER_ONCE = "you.shall.not.pass.filter";
 
-    private static final Logger LOG = LoggerFactory.getLogger(SecurityAccessGrantFilter.class);
+    private static final Logger LOG = LoggerFactory.getLogger(SecurityFilter.class);
 
     @Autowired
     private Gson gson;
@@ -99,7 +99,7 @@ public class SecurityAccessGrantFilter implements Filter {
             LOG.info("resource validator enforced {}", validator.requires());
             if (sessionService.isExpiredSession(sessionByToken)
                     || validator.requires().levelIsHigher(grant)) {
-                throw new AccessGrantException(validator.requires(), "invalid access grant");
+                throw new AccessGrantException(validator.requires(), "invalid access level");
             }
             csrfProtectionService.validateCsrfCookie(request);
         });

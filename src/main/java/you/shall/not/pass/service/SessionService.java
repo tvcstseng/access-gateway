@@ -17,7 +17,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.Optional;
 
-import static you.shall.not.pass.filter.SecurityAccessGrantFilter.SESSION_COOKIE;
+import static you.shall.not.pass.filter.SecurityFilter.SESSION_COOKIE;
 
 @Service
 public class SessionService {
@@ -65,7 +65,7 @@ public class SessionService {
         final String username = LogonUserService.getCurrentUser().orElseThrow(()
                 -> new RuntimeException("unknown user requesting session!"));
         final Access grant = LogonUserService.getCurrentAccessLevel().orElseThrow(()
-                -> new RuntimeException("Invalid user access grant!"));
+                -> new RuntimeException("Invalid user access level!"));
 
         final User user = userService.getUserByName(username);
         Optional<Session> priorSession = findLastKnownSession(user, grant);
