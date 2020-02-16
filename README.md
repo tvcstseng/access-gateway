@@ -22,8 +22,9 @@ Static resources are hidden behind access, user can only gain access to resource
 
 GET "http://localhost:8080/access"
 
-* Authorization header used access challenge
-* Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
+Authorization header required
+
+Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
 
 #### on success
 * session cookie
