@@ -26,6 +26,10 @@ Authorization header required
 
 Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
 
+```
+{"authenticated":true}
+```
+
 #### on success
 * session cookie
 * CSRF cookie
@@ -33,6 +37,21 @@ Input example Authorization: Basic "{requested_level}#{username}:{password}" enc
 ### Hosted static-resources available 
 
 GET "http://localhost:8080/resources"
+
+Response
+
+```
+{ 
+   "resources":[ 
+      "/Level1/low/access.txt",
+      "/Level1/low_access.txt",
+      "/Level2/high_access.txt",
+      "/Level2/what/am/I/access.txt",
+      "/css/main.css",
+      "/js/main.js"
+   ]
+}
+```
 
 will give a list of all static resources hosted by the server 
 
