@@ -22,23 +22,25 @@ Static resources are hidden behind access, user can only gain access to resource
 
 GET "http://localhost:8080/access"
 
-* Authorization header used access challenge.
+* Authorization header used access challenge
 * Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
-* On successful login sessions are granted to the browser
-* CSRF token also given
+
+#### on success
+* session cookie
+* CSRF cookie
 
 ### Hosted static-resources available 
 
 GET "http://localhost:8080/resources"
 
-to retrieve list of all static resource relative paths 
+will give a list of all static resources hosted by the server 
 
 #### Usage
 * Resources can be accessed directly "http://localhost:8080/level1/low_access.txt" 
 * Resources require session and appropriate access level to be requested 
 
 #### Violations
-If no appropriate session and csrf token is found access violation (403) or csrf violation (400) is thrown
+If no appropriate session and csrf token is found an access(403)/csrf(400) violation is thrown.
 
 #### Basic CSRF protection
 
