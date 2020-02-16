@@ -1,12 +1,13 @@
 # access-gateway
 
 Server that protect resources on appropriate access levels.
-
-* Spring boot
-* Spring security
-* Spring mongo db
-* Spring web services
-* lombok
+* [Spring Boot Maven Plugin Reference Guide]
+* [Spring Configuration Processor]
+* [Spring Web]
+* [Spring Web Services]
+* [Apache Freemarker]
+* [Spring Security]
+* [Spring Data MongoDB]
 
 
 ### Access level are broken up in LOW and HIGH
