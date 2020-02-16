@@ -18,7 +18,7 @@ Static resources are hidden behind access, user can only gain access to resource
 * High is alpha numeric password
 
 
-### To gain access to resource, do user logon first
+### Access resource
 
 GET "http://localhost:8080/access"
 
@@ -27,7 +27,7 @@ GET "http://localhost:8080/access"
 * On successful login sessions are granted to the browser
 * CSRF token also given
 
-### Any static-resource available 
+### Hosted static-resources available 
 
 GET "http://localhost:8080/resources"
 
