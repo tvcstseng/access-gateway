@@ -1,15 +1,15 @@
 package you.shall.not.pass.exception;
 
 import lombok.Getter;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Access;
 
 
 @Getter
 public class AccessGrantException extends RuntimeException {
 
-    private final AccessGrant required;
+    private final Access required;
 
-    public AccessGrantException(AccessGrant required, String message) {
+    public AccessGrantException(Access required, String message) {
         super(message);
         this.required = required;
     }

@@ -15,12 +15,11 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
-import you.shall.not.pass.dto.CsrfViolation;
 import you.shall.not.pass.exception.CsrfViolationException;
-import you.shall.not.pass.service.CsrfCookieService;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.service.CsrfProtectionService;
+import you.shall.not.pass.domain.Access;
 import you.shall.not.pass.domain.Session;
-import you.shall.not.pass.dto.AccessViolation;
+import you.shall.not.pass.dto.Violation;
 import you.shall.not.pass.exception.AccessGrantException;
 import you.shall.not.pass.filter.staticresource.StaticResourceValidator;
 import you.shall.not.pass.service.CookieService;
@@ -48,7 +47,7 @@ public class SecurityAccessGrantFilter implements Filter {
     private List<StaticResourceValidator> resourcesValidators;
 
     @Autowired
-    private CsrfCookieService csrfCookieService;
+    private CsrfProtectionService csrfProtectionService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -69,23 +68,22 @@ public class SecurityAccessGrantFilter implements Filter {
     }
 
     private void processCsrfViolation(HttpServletResponse response, CsrfViolationException cve) {
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-
-        CsrfViolation violation = CsrfViolation.builder()
+        Violation violation = Violation.builder()
                 .message(cve.getMessage())
+                .csrfPassed(false)
                 .build();
 
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
         writeResponse(response, gson.toJson(violation));
     }
 
     private void processAccessGrantError(HttpServletResponse response, AccessGrantException age) {
-        response.setStatus(HttpStatus.FORBIDDEN.value());
-
-        AccessViolation violation = AccessViolation.builder()
-                .userMessage(age.getMessage())
-                .requiredGrant(age.getRequired())
+        Violation violation = Violation.builder()
+                .message(age.getMessage())
+                .requiredAccess(age.getRequired())
                 .build();
 
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         writeResponse(response, gson.toJson(violation));
     }
 
@@ -93,8 +91,8 @@ public class SecurityAccessGrantFilter implements Filter {
         final String cookieValue = cookieService.getCookieValue( request, SESSION_COOKIE);
         final Optional<Session> sessionByToken = sessionService.findSessionByToken(cookieValue);
         final String requestedUri = request.getRequestURI();
-        LOG.info("Incoming request {} with token {}", requestedUri, cookieValue);
-        final AccessGrant grant = sessionByToken.map(Session::getGrant).orElse(null);
+        LOG.info("incoming request {} with token {}", requestedUri, cookieValue);
+        final Access grant = sessionByToken.map(Session::getGrant).orElse(null);
         LOG.info("user grant level {}", grant);
         final Optional<StaticResourceValidator> resourceValidator = getValidator(requestedUri);
         resourceValidator.ifPresent(validator -> {
@@ -103,7 +101,7 @@ public class SecurityAccessGrantFilter implements Filter {
                     || validator.requires().levelIsHigher(grant)) {
                 throw new AccessGrantException(validator.requires(), "invalid access grant");
             }
-            csrfCookieService.validateCsrfCookie(request);
+            csrfProtectionService.validateCsrfCookie(request);
         });
     }
 

@@ -8,8 +8,8 @@ import org.springframework.data.annotation.Id;
 @Builder
 public class User {
     @Id
-    String id;
-    String userName;
-    char[] level1Password;
-    char[] level2Password;
+    private String id;
+    private String userName;
+    private char[] level1Password;
+    private char[] level2Password;
 }

@@ -3,7 +3,7 @@ package you.shall.not.pass.service;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Access;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,17 +11,17 @@ import java.util.Optional;
 
 public class LogonUserService {
 
-    public static Optional<AccessGrant> getCurrentAccessLevel() {
+    public static Optional<Access> getCurrentAccessLevel() {
         return getGateKeeperGrant();
     }
 
-    static Optional<AccessGrant> getGateKeeperGrant() {
+    static Optional<Access> getGateKeeperGrant() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         if (principal instanceof UserDetails) {
             UserDetails userDetails = ((UserDetails) principal);
             List<GrantedAuthority> targetList = new ArrayList<>(userDetails.getAuthorities());
             return targetList.stream().map(grantedAuthority ->
-                    AccessGrant.valueOf(grantedAuthority.getAuthority())).findAny();
+                    Access.valueOf(grantedAuthority.getAuthority())).findAny();
         }
         return Optional.empty();
     }

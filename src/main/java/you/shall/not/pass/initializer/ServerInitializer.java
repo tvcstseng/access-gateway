@@ -9,6 +9,7 @@ import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import you.shall.not.pass.domain.User;
+import you.shall.not.pass.properties.UserProperties;
 import you.shall.not.pass.repositories.UserRepository;
 
 import java.util.Optional;
@@ -16,35 +17,40 @@ import java.util.Optional;
 @Component
 public class ServerInitializer implements ApplicationRunner {
 
-    private final UserRepository resp;
-    private final PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository resp;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserProperties userProperties;
 
     private static final Logger LOG = LoggerFactory.getLogger(ServerInitializer.class);
 
-    @Autowired
-    public ServerInitializer(UserRepository resp, PasswordEncoder passwordEncoder) {
-        this.resp = resp;
-        this.passwordEncoder = passwordEncoder;
-    }
 
     @Override
     public void run(ApplicationArguments applicationArguments) {
         try {
-            User.UserBuilder builder = User.builder();
+            for (UserProperties.User newUser : userProperties.getUsers()) {
+                User.UserBuilder builder = User.builder();
 
-            builder.userName("test");
-            builder.level1Password(passwordEncoder.encode("1234").toCharArray());
-            builder.level2Password(passwordEncoder.encode("test").toCharArray());
+                builder.userName(newUser.getUserName())
+                        .level1Password(
+                        passwordEncoder.encode(
+                                String.valueOf(newUser.getLevel1Password())).toCharArray())
+                        .level2Password(
+                        passwordEncoder.encode(
+                                String.valueOf(newUser.getLevel2Password())).toCharArray());
 
-            Example<User> example = Example.of(User.builder().userName("test").build());
-            Optional<User> OptionalUser = resp.findOne(example);
+                Example<User> example = Example.of(User.builder().userName(newUser.getUserName()).build());
+                Optional<User> OptionalUser = resp.findOne(example);
 
-            OptionalUser.ifPresent(user -> {
-                builder.id(user.getId());
-            });
+                OptionalUser.ifPresent(user -> {
+                    builder.id(user.getId());
+                });
 
-            User saved = resp.save(builder.build());
-            LOG.info("Setting sysadmin [" + saved.getId() + "] adding test user...");
+                User saved = resp.save(builder.build());
+                LOG.info("User {} created for {}...",saved.getId() , newUser.getUserName());
+            }
         } catch (Exception ex) {
             LOG.info("Error running system init", ex);
             throw ex;

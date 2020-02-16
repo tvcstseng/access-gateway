@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class CsrfViolation {
-    private boolean csrfPassed;
-    private String message;
+public class Success {
+    private boolean authenticated;
 }

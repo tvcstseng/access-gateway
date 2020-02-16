@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import you.shall.not.pass.domain.User;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Access;
 import you.shall.not.pass.repositories.UserRepository;
 
 import java.util.HashSet;
@@ -35,12 +35,12 @@ public class CustomUserDetailService implements UserDetailsService {
     private UserGrantDetail getDetails(String lvl, User user)throws UsernameNotFoundException {
         UserGrantDetail.UserGrantDetailBuilder builder = UserGrantDetail.builder();
         Set<GrantedAuthority> grants = new HashSet<>();
-        AccessGrant grant = AccessGrant.find(lvl).orElseThrow(()
+        Access grant = Access.find(lvl).orElseThrow(()
                 -> new UsernameNotFoundException("requested grant not supported"));
         builder.userName(user.getUserName());
-        if (AccessGrant.Level1 == grant) {
+        if (Access.Level1 == grant) {
             builder.password(user.getLevel1Password());
-        } else if (AccessGrant.Level2 == grant) {
+        } else if (Access.Level2 == grant) {
             builder.password(user.getLevel2Password());
         }
         grants.add(new SimpleGrantedAuthority(grant.name()));

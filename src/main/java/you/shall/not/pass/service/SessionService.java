@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Access;
 import you.shall.not.pass.domain.Session;
 import you.shall.not.pass.domain.User;
 import you.shall.not.pass.repositories.SessionRepository;
@@ -31,13 +31,13 @@ public class SessionService {
     private UserService userService;
 
     @Autowired
-    private CsrfCookieService csrfCookieService;
+    private CsrfProtectionService csrfProtectionService;
 
     @Autowired
     private CookieService cookieService;
 
     @Autowired
-    private DateService dateService;
+    private DateResolver dateResolver;
 
     @Value("${session.expiry.seconds}")
     private int sessionExpirySeconds;
@@ -50,10 +50,10 @@ public class SessionService {
 
     public boolean isExpiredSession(Optional<Session> optionalSession) {
         return !optionalSession.isPresent() || optionalSession.filter(session -> LocalDateTime.now()
-                .isAfter(dateService.asLocalDateTime(session.getDate()))).isPresent();
+                .isAfter(dateResolver.asLocalDateTime(session.getDate()))).isPresent();
     }
 
-    private Optional<Session> findLastKnownSession(User user, AccessGrant grant) {
+    private Optional<Session> findLastKnownSession(User user, Access grant) {
         Example<Session> example = Example.of(Session.builder()
                 .userId(user.getId()).grant(grant).build());
         return sessionRepository.findAll(example).stream()
@@ -64,7 +64,7 @@ public class SessionService {
     public Optional<Cookie> grantSessionCookie() {
         final String username = LogonUserService.getCurrentUser().orElseThrow(()
                 -> new RuntimeException("unknown user requesting session!"));
-        final AccessGrant grant = LogonUserService.getCurrentAccessLevel().orElseThrow(()
+        final Access grant = LogonUserService.getCurrentAccessLevel().orElseThrow(()
                 -> new RuntimeException("Invalid user access grant!"));
 
         final User user = userService.getUserByName(username);
@@ -83,16 +83,16 @@ public class SessionService {
     private Optional<Cookie> createOldSessionCookie(Optional<Session> priorSession) {
         Session session = priorSession.orElseThrow(()
                 -> new RuntimeException("This should never happen you may not pass!"));
-        LocalDateTime cookieDate = dateService.asLocalDateTime(session.getDate());
+        LocalDateTime cookieDate = dateResolver.asLocalDateTime(session.getDate());
         long diff = LocalDateTime.now().until(cookieDate, ChronoUnit.SECONDS);
         return Optional.of(createCookie(session.getToken(), (int) diff));
     }
 
-    private Optional<Cookie> createNewSessionCookie(AccessGrant grant, User user) {
-        final String token = csrfCookieService.generateToken();
+    private Optional<Cookie> createNewSessionCookie(Access grant, User user) {
+        final String token = csrfProtectionService.generateToken();
 
         Session session = Session.builder()
-                .date(dateService.asDate(
+                .date(dateResolver.asDate(
                         LocalDateTime.now().plusSeconds(sessionExpirySeconds)))
                 .grant(grant)
                 .token(token)

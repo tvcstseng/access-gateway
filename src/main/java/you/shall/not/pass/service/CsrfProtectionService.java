@@ -21,9 +21,9 @@ import java.util.regex.Pattern;
 
 
 @Component
-public class CsrfCookieService {
+public class CsrfProtectionService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CsrfCookieService.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CsrfProtectionService.class);
 
     private final static SecureRandom SECURE_RANDOM = new SecureRandom();
 

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import you.shall.not.pass.dto.StaticResources;
 import you.shall.not.pass.filter.staticresource.StaticResourceService;
-import you.shall.not.pass.service.CsrfCookieService;
-import you.shall.not.pass.dto.Access;
+import you.shall.not.pass.service.CsrfProtectionService;
+import you.shall.not.pass.dto.Success;
 import you.shall.not.pass.service.SessionService;
 
 import javax.servlet.http.Cookie;
@@ -22,7 +22,7 @@ public class GateController {
     private SessionService sessionService;
 
     @Autowired
-    private CsrfCookieService csrfCookieService;
+    private CsrfProtectionService csrfProtectionService;
 
     @Autowired
     private StaticResourceService resourceService;
@@ -32,12 +32,12 @@ public class GateController {
 
     @GetMapping({"/access"})
     public ResponseEntity<String> access(HttpServletResponse response) {
-        Access.AccessBuilder builder = Access.builder();
+        Success.SuccessBuilder builder = Success.builder();
         Optional<Cookie> sessionCookie = sessionService.grantSessionCookie();
         sessionCookie.ifPresent(cookie -> {
             response.addCookie(cookie);
             builder.authenticated(true);
-            csrfCookieService.addCsrfCookie(response);
+            csrfProtectionService.addCsrfCookie(response);
         });
         return ResponseEntity.ok(gson.toJson(builder.build()));
     }

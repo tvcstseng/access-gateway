@@ -10,9 +10,9 @@ import java.util.Date;
 @Data
 public class Session {
     @Id
-    String sessionId;
-    AccessGrant grant;
-    String userId;
-    String token;
-    Date date;
+    private String sessionId;
+    private Access grant;
+    private String userId;
+    private String token;
+    private Date date;
 }

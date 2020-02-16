@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Access;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -39,7 +39,7 @@ public class HighLevelStaticResource implements StaticResourceValidator {
     }
 
     @Override
-    public AccessGrant requires() {
-        return AccessGrant.Level2;
+    public Access requires() {
+        return Access.Level2;
     }
 }
