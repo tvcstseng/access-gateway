@@ -37,7 +37,7 @@ to retrieve list of all static resource relative paths
 * Resources require session and appropriate access level to be requested 
 
 #### Violations
-If no appropriate session and csrf token is found access violation (403) or csrf violation (400) are thrown
+If no appropriate session and csrf token is found access violation (403) or csrf violation (400) is thrown
 
 #### Basic CSRF protection
 
