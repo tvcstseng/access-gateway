@@ -3,13 +3,13 @@
 Static resources are hidden behind access, user can only gain access to resource if he has authenticated to required access level.
 
 ### Tech stack
-* [Spring Boot Maven Plugin Reference Guide]
-* [Spring Configuration Processor]
-* [Spring Web]
-* [Spring Web Services]
-* [Apache Freemarker]
-* [Spring Security]
-* [Spring Data MongoDB]
+* Spring Boot Maven Plugin Reference Guide
+* Spring Configuration Processor
+* Spring Web
+* Spring Web Services
+* Apache Freemarker
+* Spring Security
+* Spring Data MongoDB
 
 
 ### Access levels Supported
