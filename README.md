@@ -60,7 +60,7 @@ will give a list of all static resources hosted by the server
 * Resources require session and appropriate access level to be requested 
 
 #### Violations
-If no appropriate session and csrf token is found an access(403)/csrf(400) violation is thrown.
+If no appropriate session and csrf token is received on resource request, an access(403)/csrf(400) violation is returned.
 
 ```
 {"requiredAccess":"Level1","message":"invalid access level"}
