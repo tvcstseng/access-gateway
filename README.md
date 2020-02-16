@@ -1,6 +1,8 @@
 # access-gateway
 
-Server that protect resources on appropriate access levels.
+Static resources are hidden behind access, user can only gain access to resource if he has authenticated to required access level.
+
+### Tech stack
 * [Spring Boot Maven Plugin Reference Guide]
 * [Spring Configuration Processor]
 * [Spring Web]
