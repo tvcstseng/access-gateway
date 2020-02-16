@@ -12,7 +12,7 @@ Static resources are hidden behind access, user can only gain access to resource
 * [Spring Data MongoDB]
 
 
-### Access level are broken up in LOW and HIGH
+### Access levels are broken up in LOW and HIGH
 
 * Low is set to numeric password
 * High is alpha numeric password
