@@ -5,11 +5,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import you.shall.not.pass.service.CsrfCookieService;
 import you.shall.not.pass.dto.Access;
 import you.shall.not.pass.service.SessionService;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
@@ -20,15 +20,19 @@ public class GateController {
     private SessionService sessionService;
 
     @Autowired
+    private CsrfCookieService csrfCookieService;
+
+    @Autowired
     private Gson gson;
 
     @GetMapping({"/access"})
-    public ResponseEntity<String> access(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> access(HttpServletResponse response) {
         Access.AccessBuilder builder = Access.builder();
         Optional<Cookie> sessionCookie = sessionService.grantSessionCookie();
         sessionCookie.ifPresent(cookie -> {
             response.addCookie(cookie);
             builder.authenticated(true);
+            csrfCookieService.addCsrfCookie(response);
         });
         return ResponseEntity.ok(gson.toJson(builder.build()));
     }

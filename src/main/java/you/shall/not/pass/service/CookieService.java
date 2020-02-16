@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Component
 public class CookieService {
@@ -15,6 +16,13 @@ public class CookieService {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElse(null);
+    }
+
+    public Cookie createCookie(String name, String token, int expireInSeconds) {
+        Cookie cookie = new Cookie(name, token);
+        cookie.setHttpOnly(true);
+        cookie.setMaxAge(expireInSeconds);
+        return cookie;
     }
 
 }

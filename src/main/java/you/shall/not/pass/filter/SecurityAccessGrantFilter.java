@@ -15,6 +15,9 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
+import you.shall.not.pass.dto.CsrfViolation;
+import you.shall.not.pass.exception.CsrfViolationException;
+import you.shall.not.pass.service.CsrfCookieService;
 import you.shall.not.pass.domain.grant.AccessGrant;
 import you.shall.not.pass.domain.session.Session;
 import you.shall.not.pass.dto.AccessViolation;
@@ -28,7 +31,7 @@ import you.shall.not.pass.service.SessionService;
 public class SecurityAccessGrantFilter implements Filter {
 
     public static final String SESSION_COOKIE = "GRANT";
-    public static final String YOU_SHALL_NOT_PASS_FILTER = "you.shall.not.pass.filter";
+    public static final String YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN = "you.shall.not.pass.filter";
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityAccessGrantFilter.class);
 
@@ -44,30 +47,57 @@ public class SecurityAccessGrantFilter implements Filter {
     @Autowired
     private List<StaticResourceValidator> resourcesValidators;
 
+    @Autowired
+    private CsrfCookieService csrfCookieService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         try {
-            if (request.getAttribute(YOU_SHALL_NOT_PASS_FILTER) == null) {
+            if (request.getAttribute(YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN) == null) {
                 shallNotPassLogic((HttpServletRequest) request);
             }
-            request.setAttribute(YOU_SHALL_NOT_PASS_FILTER, true);
+            request.setAttribute(YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN, true);
             chain.doFilter(request, response);
-        } catch (AccessGrantException e) {
-            processAccessGrantError((HttpServletResponse) response, e);
+        } catch (AccessGrantException age) {
+            LOG.info("Access grant violation exception", age);
+            processAccessGrantError((HttpServletResponse) response, age);
+        } catch (CsrfViolationException cve) {
+            LOG.info("Csrf violation exception", cve);
+            processCsrfViolation((HttpServletResponse) response, cve);
         }
     }
 
+    private void processCsrfViolation(HttpServletResponse response, CsrfViolationException e) throws IOException {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
+
+        CsrfViolation violation = CsrfViolation.builder()
+                .message(e.getMessage())
+                .build();
+
+        writeResponse(response, gson.toJson(violation));
+    }
+
+    private void writeResponse(HttpServletResponse response, String message) throws IOException {
+        try {
+            PrintWriter out = response.getWriter();
+            LOG.info("response message {}", message);
+            out.print(message);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     private void processAccessGrantError(HttpServletResponse response, AccessGrantException accessViolation) throws IOException {
         response.setStatus(HttpStatus.FORBIDDEN.value());
-        PrintWriter out = response.getWriter();
+
         AccessViolation violation = AccessViolation.builder()
                 .userMessage(accessViolation.getMessage())
-                .requiredGrant(accessViolation.getRequired()).build();
-        out.print(gson.toJson(violation));
-        out.flush();
+                .requiredGrant(accessViolation.getRequired())
+                .build();
+
+        writeResponse(response, gson.toJson(violation));
     }
 
     private void shallNotPassLogic(HttpServletRequest request) {
@@ -84,6 +114,7 @@ public class SecurityAccessGrantFilter implements Filter {
                     || validator.requires().levelIsHigher(grant)) {
                 throw new AccessGrantException(validator.requires(), "invalid access grant");
             }
+            csrfCookieService.validateCsrfCookie(request);
         });
     }
 
