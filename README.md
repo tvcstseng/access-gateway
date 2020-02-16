@@ -20,11 +20,12 @@ Static resources are hidden behind access, user can only gain access to resource
 
 ### To gain access to resource, do user logon first
 
-GET http://localhost:8080/access
+GET "http://localhost:8080/access"
 
 * Authorization header is for user access challenge.
 * Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
 * On successful login sessions are granted to the browser
+* CSRF token also given
 
 ### Any static-resource available 
 
@@ -46,6 +47,6 @@ If no appropriate session and csrf token is found access violation (403) or csrf
 
 #### Example used for tests only
 
-GET  http://localhost:8080/level1/low_access.txt?XSRF=75DA5FAF2470BAA3_1581848921
+GET "http://localhost:8080/level1/low_access.txt?XSRF=75DA5FAF2470BAA3_1581848921"
 
 XSRF token should always use a header for passing the token value to server, example above is just for simmple browser tests.
