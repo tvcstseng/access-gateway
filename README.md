@@ -26,11 +26,12 @@ GET http://localhost:8080/access
 ### Any static-resource available 
 
 GET "http://localhost:8080/resources"
+
 to retrieve list of all static resource relative paths 
 
 #### Usage
-Resources can be accessed directly "http://localhost:8080/level1/low_access.txt" 
-Resources require session and appropriate access level to be requested 
+* Resources can be accessed directly "http://localhost:8080/level1/low_access.txt" 
+* Resources require session and appropriate access level to be requested 
 
 #### Violations
 If no appropriate session and csrf token is found access violation (403) or csrf violation (400) are thrown
