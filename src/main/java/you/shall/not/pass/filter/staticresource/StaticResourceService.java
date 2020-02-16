@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 @Component
 public class StaticResourceService {
 
+    @Value("classpath:static/**")
+    private Resource[] resources;
+
     @Value("${static.resources}")
     private String context;
 
@@ -31,6 +34,10 @@ public class StaticResourceService {
                         throw new RuntimeException(e);
                     }
                 }).collect(Collectors.toList());
+    }
+
+    public List<String> getAllStaticResources() {
+        return resolveStaticResources(resources);
     }
 
 }

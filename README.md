@@ -18,7 +18,7 @@ Static resources are hidden behind access, user can only gain access to resource
 * High is alpha numeric password
 
 
-### To gain access do user logon
+### To gain access to resource, do user logon first
 
 GET http://localhost:8080/access
 

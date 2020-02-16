@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import you.shall.not.pass.dto.StaticResources;
+import you.shall.not.pass.filter.staticresource.StaticResourceService;
 import you.shall.not.pass.service.CsrfCookieService;
 import you.shall.not.pass.dto.Access;
 import you.shall.not.pass.service.SessionService;
@@ -23,6 +25,9 @@ public class GateController {
     private CsrfCookieService csrfCookieService;
 
     @Autowired
+    private StaticResourceService resourceService;
+
+    @Autowired
     private Gson gson;
 
     @GetMapping({"/access"})
@@ -35,6 +40,13 @@ public class GateController {
             csrfCookieService.addCsrfCookie(response);
         });
         return ResponseEntity.ok(gson.toJson(builder.build()));
+    }
+
+    @GetMapping({"/resources"})
+    public ResponseEntity<String> resources() {
+        StaticResources resources = StaticResources.builder()
+                .resources(resourceService.getAllStaticResources()).build();
+        return ResponseEntity.ok(gson.toJson(resources));
     }
 
     @GetMapping({"/home"})
