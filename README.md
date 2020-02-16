@@ -22,7 +22,7 @@ Static resources are hidden behind access, user can only gain access to resource
 
 GET "http://localhost:8080/access"
 
-* Authorization header is for user access challenge.
+* Authorization header used access challenge.
 * Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
 * On successful login sessions are granted to the browser
 * CSRF token also given
