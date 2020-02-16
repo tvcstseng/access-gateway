@@ -48,4 +48,4 @@ If no appropriate session and csrf token is found access violation (403) or csrf
 
 GET  http://localhost:8080/level1/low_access.txt?XSRF=75DA5FAF2470BAA3_1581848921
 
-XSRF token can be also be set as header for better security.
+XSRF token should always use header, example above is just for simmple browser tests.
