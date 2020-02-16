@@ -62,6 +62,10 @@ will give a list of all static resources hosted by the server
 #### Violations
 If no appropriate session and csrf token is found an access(403)/csrf(400) violation is thrown.
 
+```
+{"requiredAccess":"Level1","message":"invalid access grant"}
+```
+
 #### Basic CSRF protection
 
 * All successful authentication request will receive new csrf token, tokens are only readable from same domain and not modifiable. 
