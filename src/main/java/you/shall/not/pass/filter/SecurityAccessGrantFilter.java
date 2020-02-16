@@ -30,7 +30,7 @@ import you.shall.not.pass.service.SessionService;
 public class SecurityAccessGrantFilter implements Filter {
 
     public static final String SESSION_COOKIE = "GRANT";
-    public static final String YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN = "you.shall.not.pass.filter";
+    public static final String EXECUTE_FILTER_ONCE = "you.shall.not.pass.filter";
 
     private static final Logger LOG = LoggerFactory.getLogger(SecurityAccessGrantFilter.class);
 
@@ -53,10 +53,10 @@ public class SecurityAccessGrantFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
         try {
-            if (request.getAttribute(YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN) == null) {
+            if (request.getAttribute(EXECUTE_FILTER_ONCE) == null) {
                 shallNotPassLogic((HttpServletRequest) request);
             }
-            request.setAttribute(YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN, true);
+            request.setAttribute(EXECUTE_FILTER_ONCE, true);
             chain.doFilter(request, response);
         } catch (AccessGrantException age) {
             LOG.info("Access violation, {}", age.getMessage());

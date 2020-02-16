@@ -1,4 +1,4 @@
-package you.shall.not.pass.initializer;
+package you.shall.not.pass.runner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import you.shall.not.pass.repositories.UserRepository;
 import java.util.Optional;
 
 @Component
-public class ServerInitializer implements ApplicationRunner {
+public class UserCreationRunner implements ApplicationRunner {
 
     @Autowired
     private UserRepository resp;
@@ -24,7 +24,7 @@ public class ServerInitializer implements ApplicationRunner {
     @Autowired
     private UserProperties userProperties;
 
-    private static final Logger LOG = LoggerFactory.getLogger(ServerInitializer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UserCreationRunner.class);
 
 
     @Override
