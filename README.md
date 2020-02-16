@@ -26,6 +26,8 @@ Authorization header required
 
 Input example Authorization: Basic "{requested_level}#{username}:{password}" encoded base64 
 
+Response
+
 ```
 {"authenticated":true}
 ```
