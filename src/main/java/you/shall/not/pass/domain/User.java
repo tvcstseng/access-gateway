@@ -1,4 +1,4 @@
-package you.shall.not.pass.domain.user;
+package you.shall.not.pass.domain;
 
 import lombok.Builder;
 import lombok.Data;

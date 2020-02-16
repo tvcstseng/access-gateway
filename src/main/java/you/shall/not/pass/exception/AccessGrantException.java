@@ -1,7 +1,7 @@
 package you.shall.not.pass.exception;
 
 import lombok.Getter;
-import you.shall.not.pass.domain.grant.AccessGrant;
+import you.shall.not.pass.domain.AccessGrant;
 
 
 @Getter

@@ -8,7 +8,7 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.data.domain.Example;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import you.shall.not.pass.domain.user.User;
+import you.shall.not.pass.domain.User;
 import you.shall.not.pass.repositories.UserRepository;
 
 import java.util.Optional;

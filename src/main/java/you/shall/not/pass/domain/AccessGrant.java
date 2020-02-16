@@ -1,4 +1,4 @@
-package you.shall.not.pass.domain.grant;
+package you.shall.not.pass.domain;
 
 import java.util.Arrays;
 import java.util.Optional;

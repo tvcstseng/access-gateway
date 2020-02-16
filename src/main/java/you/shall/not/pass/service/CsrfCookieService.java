@@ -31,9 +31,7 @@ public class CsrfCookieService {
     private final static String CSRF_GUARD_NAME = "XSRF";
     private final static int STANDARD_SIZE_TOKEN = 50;
     private final static int CSRF_TOKEN_SIZE = 8;
-    private final static String GUARD_DIV = "_";
-    private final static Pattern GUARD_PATTERN = Pattern.compile("[a-zA-Z0-9]{"
-            + 16 + "}" + GUARD_DIV + "[0-9]*");
+    private final static Pattern GUARD_PATTERN = Pattern.compile("[a-zA-Z0-9]{16}_[0-9]{10}");
 
     @Value("${csrf.expiry.seconds}")
     private int expiry;
@@ -71,7 +69,7 @@ public class CsrfCookieService {
         final Matcher matcher = GUARD_PATTERN.matcher(cookieValue);
         boolean matches = matcher.matches();
 
-        LOG.info("csrf cookie matches : {}", matches);
+        LOG.info("csrf cookie pattern guard passed: {}", matches);
 
         if (!matches) {
             throw new CsrfViolationException("Dont try and fake your key, I know all!");
@@ -82,7 +80,7 @@ public class CsrfCookieService {
         LOG.info("csrf diff : {}", diff);
 
         if (!cookieValue.equals(guardCheckValue) || diff <= 0) {
-            throw new CsrfViolationException("2 of one which is not the same..");
+            throw new CsrfViolationException("Two of one, which one is not the same!");
         }
     }
 

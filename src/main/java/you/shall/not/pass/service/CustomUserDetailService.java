@@ -8,8 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import you.shall.not.pass.domain.user.User;
-import you.shall.not.pass.domain.grant.AccessGrant;
+import you.shall.not.pass.domain.User;
+import you.shall.not.pass.domain.AccessGrant;
 import you.shall.not.pass.repositories.UserRepository;
 
 import java.util.HashSet;

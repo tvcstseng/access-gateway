@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
-import you.shall.not.pass.domain.grant.AccessGrant;
+import you.shall.not.pass.domain.AccessGrant;
 
 import javax.annotation.PostConstruct;
 import java.util.List;

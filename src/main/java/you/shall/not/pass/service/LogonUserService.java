@@ -3,7 +3,7 @@ package you.shall.not.pass.service;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import you.shall.not.pass.domain.grant.AccessGrant;
+import you.shall.not.pass.domain.AccessGrant;
 
 import java.util.ArrayList;
 import java.util.List;

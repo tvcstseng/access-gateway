@@ -25,7 +25,6 @@ public class SecurityConfigAdapter extends WebSecurityConfigurerAdapter {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 
-
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
@@ -33,16 +32,17 @@ public class SecurityConfigAdapter extends WebSecurityConfigurerAdapter {
                 .passwordEncoder(passwordEncoder());
     }
 
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf()
                 .disable()
-                //.formLogin().disable()
-                .httpBasic().and()
-                .anonymous().disable()
+                .httpBasic()
+                .and()
+                .anonymous()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/access").permitAll();
+                .antMatchers("/access")
+                .permitAll();
     }
 
 }

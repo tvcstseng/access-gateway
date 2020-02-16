@@ -6,9 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
-import you.shall.not.pass.domain.grant.AccessGrant;
-import you.shall.not.pass.domain.session.Session;
-import you.shall.not.pass.domain.user.User;
+import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Session;
+import you.shall.not.pass.domain.User;
 import you.shall.not.pass.repositories.SessionRepository;
 
 import javax.servlet.http.Cookie;

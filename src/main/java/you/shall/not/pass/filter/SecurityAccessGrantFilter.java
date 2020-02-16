@@ -18,8 +18,8 @@ import java.util.Optional;
 import you.shall.not.pass.dto.CsrfViolation;
 import you.shall.not.pass.exception.CsrfViolationException;
 import you.shall.not.pass.service.CsrfCookieService;
-import you.shall.not.pass.domain.grant.AccessGrant;
-import you.shall.not.pass.domain.session.Session;
+import you.shall.not.pass.domain.AccessGrant;
+import you.shall.not.pass.domain.Session;
 import you.shall.not.pass.dto.AccessViolation;
 import you.shall.not.pass.exception.AccessGrantException;
 import you.shall.not.pass.filter.staticresource.StaticResourceValidator;
@@ -60,41 +60,30 @@ public class SecurityAccessGrantFilter implements Filter {
             request.setAttribute(YOU_SHALL_NOT_PASS_FILTER_OVER_ME_AGAIN, true);
             chain.doFilter(request, response);
         } catch (AccessGrantException age) {
-            LOG.info("Access grant violation exception", age);
+            LOG.info("Access violation, {}", age.getMessage());
             processAccessGrantError((HttpServletResponse) response, age);
         } catch (CsrfViolationException cve) {
-            LOG.info("Csrf violation exception", cve);
+            LOG.info("CSRF violation, {}", cve.getMessage());
             processCsrfViolation((HttpServletResponse) response, cve);
         }
     }
 
-    private void processCsrfViolation(HttpServletResponse response, CsrfViolationException e) throws IOException {
+    private void processCsrfViolation(HttpServletResponse response, CsrfViolationException cve) {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
 
         CsrfViolation violation = CsrfViolation.builder()
-                .message(e.getMessage())
+                .message(cve.getMessage())
                 .build();
 
         writeResponse(response, gson.toJson(violation));
     }
 
-    private void writeResponse(HttpServletResponse response, String message) throws IOException {
-        try {
-            PrintWriter out = response.getWriter();
-            LOG.info("response message {}", message);
-            out.print(message);
-            out.flush();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void processAccessGrantError(HttpServletResponse response, AccessGrantException accessViolation) throws IOException {
+    private void processAccessGrantError(HttpServletResponse response, AccessGrantException age) {
         response.setStatus(HttpStatus.FORBIDDEN.value());
 
         AccessViolation violation = AccessViolation.builder()
-                .userMessage(accessViolation.getMessage())
-                .requiredGrant(accessViolation.getRequired())
+                .userMessage(age.getMessage())
+                .requiredGrant(age.getRequired())
                 .build();
 
         writeResponse(response, gson.toJson(violation));
@@ -121,6 +110,17 @@ public class SecurityAccessGrantFilter implements Filter {
     private Optional<StaticResourceValidator> getValidator(String requestedUri) {
        return resourcesValidators.stream().filter(staticResourceValidator
                -> staticResourceValidator.isApplicable(requestedUri)).findFirst();
+    }
+
+    private void writeResponse(HttpServletResponse response, String message) {
+        try {
+            PrintWriter out = response.getWriter();
+            LOG.info("response message {}", message);
+            out.print(message);
+            out.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }
