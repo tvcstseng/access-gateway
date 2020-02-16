@@ -63,7 +63,7 @@ will give a list of all static resources hosted by the server
 If no appropriate session and csrf token is found an access(403)/csrf(400) violation is thrown.
 
 ```
-{"requiredAccess":"Level1","message":"invalid access grant"}
+{"requiredAccess":"Level1","message":"invalid access level"}
 ```
 
 #### Basic CSRF protection
