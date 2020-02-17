@@ -10,6 +10,9 @@ import java.util.Arrays;
 public class CookieService {
 
     public String getCookieValue(HttpServletRequest req, String cookieName) {
+        if (req.getCookies() == null) {
+            return null;
+        }
         return Arrays.stream(req.getCookies())
                 .filter(c -> c.getName().equals(cookieName))
                 .findFirst()
