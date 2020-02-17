@@ -73,8 +73,8 @@ If no appropriate session and csrf token is received on resource request, an acc
 * All successful authentication request will receive new csrf token, tokens are only readable from same domain and not modifiable. 
 * All request to protected resources require the CSRF token present
 
-#### Example used for tests only
+#### Retrieve static resource
 
-GET "http://localhost:8080/level1/low_access.txt?XSRF=75DA5FAF2470BAA3_1581848921"
+GET "http://localhost:8080/level1/low_access.html?XSRF=75DA5FAF2470BAA3_1581848921"
 
 XSRF token should always be used with the header option for passing the csrf cookie token value to server, example above is just for simple browser tests.
