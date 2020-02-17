@@ -64,11 +64,11 @@ public class SessionService {
     public Optional<Cookie> grantSessionCookie() {
         final String username = LogonUserService.getCurrentUser().orElseThrow(()
                 -> new RuntimeException("unknown user requesting session!"));
-        final Access grant = LogonUserService.getCurrentAccessLevel().orElseThrow(()
+        final Access level = LogonUserService.getCurrentAccessLevel().orElseThrow(()
                 -> new RuntimeException("Invalid user access level!"));
 
         final User user = userService.getUserByName(username);
-        Optional<Session> priorSession = findLastKnownSession(user, grant);
+        Optional<Session> priorSession = findLastKnownSession(user, level);
 
         boolean expired = isExpiredSession(priorSession);
         if (!expired) {
@@ -77,7 +77,7 @@ public class SessionService {
         }
 
         LOG.info("returning new session cookie");
-        return createNewSessionCookie(grant, user);
+        return createNewSessionCookie(level, user);
     }
 
     private Optional<Cookie> createOldSessionCookie(Optional<Session> priorSession) {
@@ -106,6 +106,5 @@ public class SessionService {
     private Cookie createCookie(String token, int expireInSeconds) {
         return cookieService.createCookie(SESSION_COOKIE, token, expireInSeconds);
     }
-
 
 }

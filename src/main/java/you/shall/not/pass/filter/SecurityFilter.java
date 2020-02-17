@@ -59,10 +59,10 @@ public class SecurityFilter implements Filter {
             request.setAttribute(EXECUTE_FILTER_ONCE, true);
             chain.doFilter(request, response);
         } catch (AccessGrantException age) {
-            LOG.info("Access violation, {}", age.getMessage());
+            LOG.warn("Access violation, {}", age.getMessage());
             processAccessGrantError((HttpServletResponse) response, age);
         } catch (CsrfViolationException cve) {
-            LOG.info("CSRF violation, {}", cve.getMessage());
+            LOG.warn("CSRF violation, {}", cve.getMessage());
             processCsrfViolation((HttpServletResponse) response, cve);
         }
     }
