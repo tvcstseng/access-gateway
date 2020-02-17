@@ -36,7 +36,7 @@ Response
 * session cookie
 * CSRF cookie
 
-### Hosted static-resources available 
+### Hosted static-resources 
 
 GET "http://localhost:8080/resources"
 
