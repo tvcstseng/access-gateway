@@ -7,11 +7,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import you.shall.not.pass.dto.StaticResources;
 import you.shall.not.pass.filter.staticresource.StaticResourceService;
+import you.shall.not.pass.service.CookieService;
 import you.shall.not.pass.service.CsrfProtectionService;
 import you.shall.not.pass.dto.Success;
 import you.shall.not.pass.service.SessionService;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
@@ -28,16 +28,20 @@ public class GateController {
     private StaticResourceService resourceService;
 
     @Autowired
+    private CookieService cookieService;
+
+    @Autowired
     private Gson gson;
 
     @GetMapping({"/access"})
     public ResponseEntity<String> access(HttpServletResponse response) {
         Success.SuccessBuilder builder = Success.builder();
-        Optional<Cookie> sessionCookie = sessionService.grantSessionCookie();
-        sessionCookie.ifPresent(cookie -> {
-            response.addCookie(cookie);
+        Optional<String> optionalSession = sessionService.authenticatedSession();
+        optionalSession.ifPresent(session -> {
+            String csrf = csrfProtectionService.getCsrfCookie();
+            cookieService.addCookie(csrf, response);
+            cookieService.addCookie(session, response);
             builder.authenticated(true);
-            csrfProtectionService.addCsrfCookie(response);
         });
         return ResponseEntity.ok(gson.toJson(builder.build()));
     }
@@ -51,7 +55,7 @@ public class GateController {
 
     @GetMapping({"/home"})
     public String hello() {
-        return "angular-app";
+        return "any-app";
     }
 
 }
