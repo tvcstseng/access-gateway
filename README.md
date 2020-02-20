@@ -24,7 +24,11 @@ GET "http://localhost:8080/access"
 
 Authorization header required
 
-Input example Authorization: Basic {requested_level}#{username}:{password} encoded base64 
+Input format Authorization: Basic {requested_level}#{username}:{password} encoded base64 
+
+#### Example 
+* Encoded request "Authorization: Basic MSNib2I6MTIzNDE="
+* Decoded "Authorization: Basic 1#bob:12341"
 
 Response
 
