@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import javax.servlet.*;
@@ -15,6 +16,7 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Optional;
 
+import lombok.extern.slf4j.Slf4j;
 import you.shall.not.pass.exception.CsrfViolationException;
 import you.shall.not.pass.service.CsrfProtectionService;
 import you.shall.not.pass.domain.Access;
@@ -25,6 +27,7 @@ import you.shall.not.pass.filter.staticresource.StaticResourceValidator;
 import you.shall.not.pass.service.CookieService;
 import you.shall.not.pass.service.SessionService;
 
+@Slf4j
 @Component
 @Order(1)
 public class SecurityFilter implements Filter {
@@ -98,13 +101,18 @@ public class SecurityFilter implements Filter {
         resourceValidator.ifPresent(validator -> {
             LOG.info("resource validator enforced {}", validator.requires());
             if (sessionService.isExpiredSession(sessionByToken)
-                    ) {
+            ) {
                 throw new AccessGrantException(validator.requires(), "session expired");
             }
             if (validator.requires().levelIsHigher(grant)) {
                 throw new AccessGrantException(validator.requires(), "invalid access level");
             }
-            csrfProtectionService.validateCsrfCookie(request);
+            // Requests(GET) do not suffer from CSRF,
+            // however if the method is any command (POST, PUT, DELETE)
+            // then probably this method is never reached as spring security should have discarded the message before enabling the developer to do any validation on the HttpServletRequest
+            if (!HttpMethod.GET.matches(request.getMethod())) {
+                csrfProtectionService.validateCsrfCookie(request);
+            }
         });
     }
 
