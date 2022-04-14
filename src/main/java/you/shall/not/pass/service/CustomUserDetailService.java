@@ -12,6 +12,7 @@ import you.shall.not.pass.domain.User;
 import you.shall.not.pass.domain.Access;
 import you.shall.not.pass.repositories.UserRepository;
 
+import java.lang.reflect.Array;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -49,8 +50,16 @@ public class CustomUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String user) throws UsernameNotFoundException {
+
         String[] userArray = user.split("#");
-        if (userArray != null && userArray.length == 2) {
+
+        if(userArray.length != 2){
+            // TODO: add default lvl for 'regular' user, this way you don't expose # as implementation detail in case of possible man-in-the-middle-attack
+            // TODO: also basic lvl should be created and not be set to lvl1
+            userArray = new String[] { "1", userArray[0] };
+        }
+
+        if (userArray != null) {
             String lvl = userArray[0];
             String userName = userArray[1];
 

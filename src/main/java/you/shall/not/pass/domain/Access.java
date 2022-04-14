@@ -15,7 +15,7 @@ public enum Access {
 
     public static Optional<Access> find(String lvl) {
         return Arrays.stream(Access.values()).filter(gateKeeperGrant ->
-                gateKeeperGrant.level == Integer.valueOf(lvl)).findFirst();
+            gateKeeperGrant.level == Integer.valueOf(lvl)).findFirst();
     }
 
     public boolean levelIsHigher(Access sessionAccess) {

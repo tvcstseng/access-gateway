@@ -98,7 +98,10 @@ public class SecurityFilter implements Filter {
         resourceValidator.ifPresent(validator -> {
             LOG.info("resource validator enforced {}", validator.requires());
             if (sessionService.isExpiredSession(sessionByToken)
-                    || validator.requires().levelIsHigher(grant)) {
+                    ) {
+                throw new AccessGrantException(validator.requires(), "session expired");
+            }
+            if (validator.requires().levelIsHigher(grant)) {
                 throw new AccessGrantException(validator.requires(), "invalid access level");
             }
             csrfProtectionService.validateCsrfCookie(request);

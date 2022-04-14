@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
 import you.shall.not.pass.repositories.UserRepository;
 import you.shall.not.pass.service.CustomUserDetailService;
 
@@ -36,16 +39,21 @@ public class SecurityConfigAdapter extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf()
-                .disable()
-                .httpBasic()
-                .and()
-                .anonymous()
-                .disable()
-                .authorizeRequests()
-                .antMatchers("/access")
-                .permitAll();
+            .maximumSessions(2)
+            .and().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and().csrf()
+              .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+            .and()
+              .httpBasic()
+            .and().anonymous()
+              .disable()
+              .authorizeRequests()
+              .antMatchers("/access")
+              .permitAll();
     }
 
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher() {
+        return new HttpSessionEventPublisher();
+    }
 }
