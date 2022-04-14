@@ -30,7 +30,7 @@ public class CsrfProtectionService {
     private final static String XSRF_GUARD_NAME = "XSRF";
     private final static int STANDARD_SIZE_TOKEN = 16;
     private final static int CSRF_TOKEN_SIZE = 8;
-    private final static Pattern GUARD_PATTERN = Pattern.compile("[a-zA-Z0-9]{16}_[0-9]{10}");
+    private final static Pattern GUARD_PATTERN = Pattern.compile("[a-zA-Z0-9]{16}");
 
     @Value("${csrf.expiry.seconds}")
     private int expiry;
@@ -49,8 +49,7 @@ public class CsrfProtectionService {
     }
 
     public String getCsrfCookie() {
-        long epoch = OffsetDateTime.now().plusSeconds(expiry).toEpochSecond();
-        final String token = generateToken(CSRF_TOKEN_SIZE) + "_" + epoch;
+        final String token = generateToken(CSRF_TOKEN_SIZE);
         return cookieService.createCookie(CSRF_COOKIE_NAME, token, expiry);
     }
 
@@ -74,11 +73,7 @@ public class CsrfProtectionService {
             throw new CsrfViolationException("Dont try and fake your key, I know all!");
         }
 
-        long diff = getEpochSecondsDiff(csrf);
-
-        LOG.info("csrf cookie expiry in {} secs", diff);
-
-        if (!csrf.equals(xsrfGuard) || diff <= 0) {
+        if (!csrf.equals(xsrfGuard)) {
             throw new CsrfViolationException("Two of one, which one is not the same!");
         }
     }
@@ -90,13 +85,4 @@ public class CsrfProtectionService {
         }
         return guardCheckValue;
     }
-
-    private long getEpochSecondsDiff(String cookieValue) {
-        final String values[] = cookieValue.split("_");
-        final String epochReceived = values[1];
-        final Instant ofEpochSecond = Instant.ofEpochSecond(Long.parseLong(epochReceived));
-        final OffsetDateTime ofInstant = OffsetDateTime.ofInstant(ofEpochSecond, ZoneId.systemDefault());
-        return OffsetDateTime.now().until(ofInstant, ChronoUnit.SECONDS);
-    }
-
 }
